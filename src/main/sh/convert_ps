@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# converts all ps figure files into cropped pdf figures
+
+# pdfcrop is in the texlive distribution, but we don't want to depend on exactly
+# where
+PDFCROP=$(find /usr/local/texlive -name pdfcrop | grep /bin/)
+
+# convert all of the ps files
+echo converting ps files
+for ps in src/main/ps/PS*.ps
+do
+    ps2pdf $ps
+    mv PS*.pdf src/main/pdf
+    echo "    " $ps
+done
+
+# then crop them to be useful for latex
+echo cropping files
+for pdf in src/main/pdf/PS*.pdf
+do
+    $PDFCROP $pdf
+    mv $(dirname $pdf)/*-crop.pdf $pdf
+    echo "    " $pdf
+done
